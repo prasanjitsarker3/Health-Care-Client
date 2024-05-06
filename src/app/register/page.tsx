@@ -2,7 +2,10 @@
 import { registerPatient } from "@/Server/Actions/registerPatient";
 import { userLogin } from "@/Server/Actions/userLogin";
 import { modifyPayload } from "@/Server/Payload/ModifyPayload";
+import FromInput from "@/components/From/FromInput";
+import FromProvider from "@/components/From/FromProvider";
 import { storeUserInfo } from "@/components/Utils/AuthService/authService";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -14,47 +17,54 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
-interface IPatientData {
-  name: string;
-  email: string;
-  contactNumber: string;
-  address: string;
-}
+const patientValidationSchema = z.object({
+  name: z.string().min(1, "Name is required !"),
+  email: z.string().email("Email is required!"),
+  contactNumber: z
+    .string()
+    .regex(/^\d{11}$/, "Please provide valid phone number!"),
+  address: z.string().min(1, "Please enter your address!"),
+});
+const registerValidationSchema = z.object({
+  password: z.string().min(6, "Must be at least 6 characters !"),
+  patient: patientValidationSchema,
+});
 
-interface IRegisterData {
-  password: string;
-  patient: IPatientData;
-}
-
+const defaultValue = {
+  password: "",
+  patient: {
+    name: "",
+    email: "",
+    contactNumber: "",
+    address: "",
+  },
+};
 const RegisterPage = () => {
   const router = useRouter();
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IRegisterData>();
 
-  const onSubmit: SubmitHandler<IRegisterData> = async (values) => {
+  const handleRegister = async (values: FieldValues) => {
+    const toastId = toast.loading("Register In...");
     const data = modifyPayload(values);
     try {
       const res = await registerPatient(data);
-      console.log("Res", res);
       if (res?.data?.id) {
-        toast.success(res?.message);
+        // toast.success(res?.message);
+        toast.success(res?.message, { id: toastId, duration: 2000 });
         const result = await userLogin({
           password: values.password,
           email: values.patient.email,
         });
-        console.log("Result", result);
 
         if (result?.data?.accessToken) {
           storeUserInfo({ accessToken: result?.data?.accessToken });
           router.push("/");
         }
+      } else {
+        toast.error(res.message, { id: toastId, duration: 2000 });
       }
     } catch (err: any) {
       console.log(err.message);
@@ -74,62 +84,50 @@ const RegisterPage = () => {
       }}
     >
       <Box p={5} boxShadow={1} bgcolor="white" borderRadius={1}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <FromProvider
+          onSubmit={handleRegister}
+          resolver={zodResolver(registerValidationSchema)}
+          defaultValues={defaultValue}
+        >
           <Stack>
             <Typography textAlign="center" variant="h6" component="h4" pb={2}>
               Please Register In Here
             </Typography>
             <Grid spacing={3} gap={2}>
               <Grid md={12}>
-                <TextField
-                  {...register("patient.name")}
-                  fullWidth={true}
-                  size="small"
-                  id="name"
-                  label="Name"
-                  variant="outlined"
-                />
+                <FromInput name="patient.name" fullWidth={true} label="Name" />
               </Grid>
               <Stack direction="row" py={3} gap={3}>
                 <Grid sm={12} md={6}>
-                  <TextField
-                    {...register("patient.email")}
+                  <FromInput
+                    type="email"
+                    name="patient.email"
                     fullWidth={true}
-                    size="small"
-                    id="email"
                     label="Email"
-                    variant="outlined"
                   />
                 </Grid>
                 <Grid sm={12} md={6}>
-                  <TextField
-                    {...register("password")}
+                  <FromInput
+                    name="password"
                     fullWidth={true}
-                    size="small"
-                    id="password"
                     type="password"
                     label="Password"
-                    variant="outlined"
                   />
                 </Grid>
               </Stack>
               <Stack direction="row" gap={3}>
                 <Grid md={6}>
-                  <TextField
-                    {...register("patient.contactNumber")}
-                    size="small"
-                    id="contact"
+                  <FromInput
+                    fullWidth={true}
+                    name="patient.contactNumber"
                     label="Contact Number"
-                    variant="outlined"
                   />
                 </Grid>
                 <Grid md={6}>
-                  <TextField
-                    {...register("patient.address")}
-                    size="small"
-                    id="address"
+                  <FromInput
+                    name="patient.address"
                     label="Address"
-                    variant="outlined"
+                    fullWidth={true}
                   />
                 </Grid>
               </Stack>
@@ -150,7 +148,7 @@ const RegisterPage = () => {
               </span>
             </Typography>
           </Stack>
-        </form>
+        </FromProvider>
       </Box>
     </Grid>
   );

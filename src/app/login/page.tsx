@@ -1,6 +1,9 @@
 "use client";
 import { userLogin } from "@/Server/Actions/userLogin";
+import FromInput from "@/components/From/FromInput";
+import FromProvider from "@/components/From/FromProvider";
 import { storeUserInfo } from "@/components/Utils/AuthService/authService";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Box,
   Button,
@@ -13,30 +16,39 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 
 export interface IPatientLogin {
   email: string;
   password: string;
 }
 
+const loginValidationSchema = z.object({
+  email: z.string().email("Email is required !"),
+  password: z.string().min(6, "Must be at least 6 characters !"),
+});
+
+const defaultValue = {
+  email: "",
+  password: "",
+};
+
 const LoginPage = () => {
   const router = useRouter();
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IPatientLogin>();
 
-  const onSubmit: SubmitHandler<IPatientLogin> = async (values) => {
+  const handleSubmitLogin = async (values: FieldValues) => {
+    const toastId = toast.loading("Logging In...");
     try {
       const res = await userLogin(values);
       if (res?.data?.accessToken) {
-        toast.success(res?.message);
+        // toast.success(res?.message);
+        toast.success(res?.message, { id: toastId, duration: 2000 });
         storeUserInfo({ accessToken: res?.data?.accessToken });
         router.push("/");
+      } else {
+        toast.error(res?.message, { id: toastId, duration: 2000 });
       }
     } catch (err: any) {
       console.log(err.message);
@@ -56,31 +68,31 @@ const LoginPage = () => {
       }}
     >
       <Box py={5} px={12} boxShadow={1} bgcolor="white" borderRadius={1}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <FromProvider
+          onSubmit={handleSubmitLogin}
+          resolver={zodResolver(loginValidationSchema)}
+          defaultValues={defaultValue}
+        >
           <Stack>
             <Typography textAlign="center" variant="h6" component="h4" pb={2}>
               Please Login !
             </Typography>
             <Grid gap={2}>
               <Grid item md={12} pb={3}>
-                <TextField
+                <FromInput
                   fullWidth={true}
                   size="small"
-                  id="name"
                   label="Email"
-                  variant="outlined"
-                  {...register("email")}
+                  name="email"
                 />
               </Grid>
               <Grid item md={12}>
-                <TextField
+                <FromInput
                   fullWidth={true}
                   size="small"
-                  id="name"
                   type="password"
                   label="Password"
-                  variant="outlined"
-                  {...register("password")}
+                  name="password"
                 />
               </Grid>
             </Grid>
@@ -104,7 +116,7 @@ const LoginPage = () => {
               </span>
             </Typography>
           </Stack>
-        </form>
+        </FromProvider>
       </Box>
     </Grid>
   );

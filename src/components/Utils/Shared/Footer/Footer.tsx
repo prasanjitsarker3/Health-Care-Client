@@ -37,7 +37,11 @@ const Footer = () => {
           <Image width={30} height={30} src={twitterIcon} alt="facebook" />
           <Image width={30} height={30} src={instagramIcon} alt="facebook" />
         </Stack>
-        <div className=" border-b-[1px] border-dashed pt-4"></div>
+        <Box
+          sx={{
+            border: "1px dashboard lightgray",
+          }}
+        ></Box>
       </Container>
     </div>
   );
