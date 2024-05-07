@@ -46,7 +46,7 @@ const LoginPage = () => {
         // toast.success(res?.message);
         toast.success(res?.message, { id: toastId, duration: 2000 });
         storeUserInfo({ accessToken: res?.data?.accessToken });
-        router.push("/");
+        router.push("/dashboard");
       } else {
         toast.error(res?.message, { id: toastId, duration: 2000 });
       }
