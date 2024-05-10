@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // Add a response interceptor
-axios.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   //@ts-ignore
   function (response) {
     const responseObj: ResponseSuccessType = {

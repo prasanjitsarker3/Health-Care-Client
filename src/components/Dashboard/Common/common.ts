@@ -2,7 +2,7 @@ import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 
 export const USER_ROLE = {
-  SUPER_ADMIN: "super_admin",
+  SUPER_ADMIN: "supper_admin",
   ADMIN: "admin",
   DOCTOR: "doctor",
   PATIENT: "patient",

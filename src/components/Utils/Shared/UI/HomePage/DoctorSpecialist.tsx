@@ -24,7 +24,7 @@ const DoctorSpecialist = async () => {
       </Box>
 
       <Stack direction="row" gap={5} py={5}>
-        {specialData?.data?.map((specialty: any) => (
+        {specialData?.data?.slice(0, 6).map((specialty: any) => (
           <Box
             key={specialty.id}
             sx={{
