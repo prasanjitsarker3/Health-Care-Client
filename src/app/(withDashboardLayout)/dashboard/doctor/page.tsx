@@ -4,7 +4,7 @@ import React from "react";
 const DoctorDashboardPage = () => {
   return (
     <div>
-      <Typography component="p">Doctor Dashboard Page</Typography>
+      <Typography component="p">Doctor Dashboard Page !!</Typography>
     </div>
   );
 };
