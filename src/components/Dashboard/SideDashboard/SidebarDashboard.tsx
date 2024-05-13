@@ -20,6 +20,10 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Sidebar from "../Sidebar/Sidebar";
 import SideAppBar from "../Sidebar/SideAppBar";
+import { useUserInfoQuery } from "@/Redux/userApi";
+import { Avatar, Badge, Stack } from "@mui/material";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import AccountMenu from "../Sidebar/SideAppBar";
 
 const drawerWidth = 240;
 
@@ -30,6 +34,7 @@ export default function SidebarDashboard({
 }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const { data, isLoading } = useUserInfoQuery({});
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -56,9 +61,10 @@ export default function SidebarDashboard({
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
-          backgroundColor: "#F4F7FE",
+          background: "#F4F7FE",
           boxShadow: 0,
-          borderBottom: "1px solid lightgray",
+          borderBottom: "1px solid #ddd",
+          py: 1,
         }}
       >
         <Toolbar>
@@ -67,12 +73,46 @@ export default function SidebarDashboard({
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" }, color: "#1586FD" }}
+            sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon />
+            <MenuIcon sx={{ color: "primary.main" }} />
           </IconButton>
-
-          <SideAppBar />
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <Box>
+              <Typography
+                variant="body2"
+                noWrap
+                component="div"
+                sx={{ color: "rgba(11, 17, 52, 0.6)" }}
+              >
+                Hi, {isLoading ? "Loading..." : data?.name},
+              </Typography>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ color: "primary.main" }}
+              >
+                Welcome to Health Care!
+              </Typography>
+            </Box>
+            <Stack direction="row" gap={3}>
+              <Badge badgeContent={1} color="primary">
+                <IconButton sx={{ background: "#ffffff" }}>
+                  <NotificationsNoneIcon color="action" />
+                </IconButton>
+              </Badge>
+              <Avatar alt={data?.name} src={data?.profilePhoto} />
+              <AccountMenu />
+            </Stack>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box

@@ -18,6 +18,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useDebounced } from "@/Redux/hooks";
 import { toast } from "sonner";
+import EditIcon from "@mui/icons-material/Edit";
+import Link from "next/link";
 
 const AdminPanelDoctor = () => {
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
@@ -35,7 +37,6 @@ const AdminPanelDoctor = () => {
   const { data, isLoading } = useGetDoctorsQuery({ ...query });
 
   const doctorData = data?.doctor;
-  console.log(doctorData);
   const meta = data?.doctor;
 
   const handleDeleteDoctor = async (id: string) => {
@@ -82,6 +83,12 @@ const AdminPanelDoctor = () => {
             >
               <VisibilityIcon />
             </IconButton>
+
+            <Link href={`/dashboard/admin/doctors/edit/${row.id}`}>
+              <IconButton aria-label="visibility">
+                <EditIcon />
+              </IconButton>
+            </Link>
           </Box>
         );
       },

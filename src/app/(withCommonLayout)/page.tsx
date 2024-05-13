@@ -4,7 +4,6 @@ import TopDoctor from "@/components/Utils/Shared/UI/HomePage/TopDoctor";
 import WhyUs from "@/components/Utils/Shared/UI/HomePage/WhyUs";
 
 const HomePage = () => {
-  // console.log("Hello");
   return (
     <>
       <Banner />
