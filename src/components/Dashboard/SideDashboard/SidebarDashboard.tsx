@@ -4,22 +4,12 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
-
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Sidebar from "../Sidebar/Sidebar";
-import SideAppBar from "../Sidebar/SideAppBar";
 import { useUserInfoQuery } from "@/Redux/userApi";
 import { Avatar, Badge, Stack } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
@@ -34,7 +24,8 @@ export default function SidebarDashboard({
 }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-  const { data, isLoading } = useUserInfoQuery({});
+  const { data, isLoading } = useUserInfoQuery(undefined);
+  console.log(data);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -55,7 +46,7 @@ export default function SidebarDashboard({
 
   return (
     <Box sx={{ display: "flex" }}>
-      <CssBaseline />
+      {/* <CssBaseline /> */}
       <AppBar
         position="fixed"
         sx={{
@@ -89,20 +80,21 @@ export default function SidebarDashboard({
               <Typography
                 variant="body2"
                 noWrap
-                component="div"
+                component="h6"
                 sx={{ color: "rgba(11, 17, 52, 0.6)" }}
               >
-                Hi, {isLoading ? "Loading..." : data?.name},
+                Hi, {isLoading ? "Loading..." : data?.name || ""},
               </Typography>
               <Typography
                 variant="h6"
                 noWrap
-                component="div"
+                component="h6"
                 sx={{ color: "primary.main" }}
               >
                 Welcome to Health Care!
               </Typography>
             </Box>
+
             <Stack direction="row" gap={3}>
               <Badge badgeContent={1} color="primary">
                 <IconButton sx={{ background: "#ffffff" }}>

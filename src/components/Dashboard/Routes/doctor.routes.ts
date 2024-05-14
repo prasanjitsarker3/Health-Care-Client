@@ -1,5 +1,6 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import GroupIcon from "@mui/icons-material/Group";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import ScheduleIcon from "@mui/icons-material/Schedule";
 
 export const doctorRoutes = (role: string) => {
   return [
@@ -10,8 +11,13 @@ export const doctorRoutes = (role: string) => {
     },
     {
       title: "Schedule",
-      path: `${role}/schedule`,
-      icon: GroupIcon,
+      path: `${role}/schedules`,
+      icon: ScheduleIcon,
+    },
+    {
+      title: "Appointment",
+      path: `${role}/appointments`,
+      icon: CollectionsBookmarkIcon,
     },
   ];
 };

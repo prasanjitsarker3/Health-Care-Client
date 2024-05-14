@@ -36,6 +36,21 @@ const doctors = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["doctors"],
     }),
+    getSingleDoctor: builder.query({
+      query: (id: string | string[] | undefined) => ({
+        url: `/doctor/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["doctors"],
+    }),
+    updateDoctor: builder.mutation({
+      query: (data) => ({
+        url: `/doctor/${data.id}`,
+        method: "PATCH",
+        data: data.body,
+      }),
+      invalidatesTags: ["doctors"],
+    }),
   }),
 });
 
@@ -43,4 +58,6 @@ export const {
   useCreateDoctorsMutation,
   useGetDoctorsQuery,
   useDeleteDoctorMutation,
+  useGetSingleDoctorQuery,
+  useUpdateDoctorMutation,
 } = doctors;
